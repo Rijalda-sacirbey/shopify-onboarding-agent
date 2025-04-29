@@ -64,4 +64,24 @@ def retrieve(query: str):
     )
     return serialized, retrieved_docs
 
+def query_or_respond(state: MessagesState):
+    system_message = SystemMessage( # Append a clear system instruction
+        "You are an assistant. Only use the 'retrieve' tool for domain-specific questions. "
+        "For general or conversational queries such as greetings or 'can you help me with something', "
+        "provide a direct answer without calling any tools."
+    )
+
+    messages = [system_message] + state["messages"]
+    llm_with_tools = llm.bind_tools([retrieve])
+    response = llm_with_tools.invoke(messages)
+
+    # Check if the response includes an empty tool-use message
+    tool_calls = getattr(response, "tool_calls", None)
+
+    # If tool_calls attribute exists but is empty, assume no tool was needed.
+    if tool_calls is not None and not tool_calls:
+        fallback = {"role": "ai", "content": "Hello! How can I assist you today?"}
+        return {"messages": [fallback]}
+    return {"messages": [response]}
+
 tools = ToolNode([retrieve])
