@@ -121,3 +121,12 @@ def generate(state: MessagesState):
     # This is the moment when we start the generation, see the graph in the sections below
     response = llm.invoke(prompt)
     return {"messages": [response]}
+
+input_message = "Mr. Chat, how do you do!"
+
+for step in graph.stream(
+    {"messages": [{"role": "user", "content": input_message}]},
+    stream_mode="values",
+    config=config
+):
+    step["messages"][-1].pretty_print()
