@@ -47,3 +47,5 @@ loader = WebBaseLoader(
 )
 
 docs = loader.load()
+
+graph_builder = StateGraph(MessagesState)
