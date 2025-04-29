@@ -53,3 +53,13 @@ all_splits = text_splitter.split_documents(docs)
 _ = vector_store.add_documents(documents=all_splits)
 
 graph_builder = StateGraph(MessagesState)
+
+@tool(response_format="content_and_artifact")
+def retrieve(query: str):
+    """Retrieve information related to a query."""
+    retrieved_docs = vector_store.similarity_search(query, k=2) # k is the number of search results
+    serialized = "\n\n".join(
+        (f"Source: {doc.metadata}\n" f"Content: {doc.page_content}")
+        for doc in retrieved_docs
+    )
+    return serialized, retrieved_docs
