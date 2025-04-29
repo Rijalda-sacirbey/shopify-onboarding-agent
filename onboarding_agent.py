@@ -122,8 +122,30 @@ def generate(state: MessagesState):
     response = llm.invoke(prompt)
     return {"messages": [response]}
 
-input_message = "Mr. Chat, how do you do!"
+graph_builder.add_node(query_or_respond)
+graph_builder.add_node(tools)
+graph_builder.add_node(generate)
 
+graph_builder.set_entry_point("query_or_respond")
+graph_builder.add_conditional_edges(
+    "query_or_respond",
+    tools_condition,
+    {END: END, "tools": "tools"},
+)
+
+graph_builder.add_edge("tools", "generate")
+graph_builder.add_edge("generate", END)
+
+# Init chat persistance
+memory = MemorySaver()
+
+# Compile with the peristance layer (similar to git logs)
+graph = graph_builder.compile(checkpointer=memory)
+
+# Specify an ID for the thread (similar to git branch)
+config = {"configurable": {"thread_id": "test_123"}}
+
+input_message = "Mr. Chat, how do you do!"
 for step in graph.stream(
     {"messages": [{"role": "user", "content": input_message}]},
     stream_mode="values",
