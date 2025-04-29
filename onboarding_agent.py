@@ -38,3 +38,5 @@ if not os.environ.get("MISTRAL_API_KEY"):
     # os.environ["MISTRAL_API_KEY"] = "add-your-key"
 
 embeddings = MistralAIEmbeddings(model="mistral-embed")
+
+vector_store = InMemoryVectorStore(embeddings)
