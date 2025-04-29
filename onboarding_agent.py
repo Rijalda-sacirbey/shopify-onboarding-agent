@@ -161,3 +161,13 @@ for step in graph.stream(
     config=config
 ):
     step["messages"][-1].pretty_print()
+
+
+input_message = "Can you look up some common ways of doing it?"
+
+for step in graph.stream(
+    {"messages": [{"role": "user", "content": input_message}]},
+    stream_mode="values",
+    config=config,
+):
+    step["messages"][-1].pretty_print()
