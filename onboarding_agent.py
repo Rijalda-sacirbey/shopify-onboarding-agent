@@ -63,3 +63,5 @@ def retrieve(query: str):
         for doc in retrieved_docs
     )
     return serialized, retrieved_docs
+
+tools = ToolNode([retrieve])
