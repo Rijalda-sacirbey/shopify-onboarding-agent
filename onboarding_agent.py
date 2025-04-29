@@ -17,3 +17,24 @@ from langgraph.prebuilt import ToolNode
 from langgraph.graph import END
 from langgraph.prebuilt import ToolNode, tools_condition
 from langgraph.checkpoint.memory import MemorySaver
+
+os.environ['USER_AGENT'] = 'paai-agent'
+os.environ["LANGSMITH_TRACING"] = "true"
+
+# os.environ["LANGSMITH_API_KEY"] = "add-your-key"
+os.environ["LANGSMITH_API_KEY"] = getpass.getpass("Enter LangSmith API key: ")
+
+if not os.environ.get("GROQ_API_KEY"):
+    # os.environ["GROQ_API_KEY"] = "add-your-key"
+    os.environ["GROQ_API_KEY"] = getpass.getpass("Enter API key for Groq: ")
+
+llm = init_chat_model("llama3-8b-8192", model_provider="groq")
+
+# os.environ["HF_TOKEN"] = "add-your-key"
+os.environ["HF_TOKEN"] = getpass.getpass("Enter Huggingface token: ")
+
+if not os.environ.get("MISTRAL_API_KEY"):
+    os.environ["MISTRAL_API_KEY"] = getpass.getpass("Enter API key for MistralAI: ")
+    # os.environ["MISTRAL_API_KEY"] = "add-your-key"
+
+embeddings = MistralAIEmbeddings(model="mistral-embed")
