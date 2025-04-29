@@ -40,3 +40,10 @@ if not os.environ.get("MISTRAL_API_KEY"):
 embeddings = MistralAIEmbeddings(model="mistral-embed")
 
 vector_store = InMemoryVectorStore(embeddings)
+
+loader = WebBaseLoader(
+    web_paths=("https://lilianweng.github.io/posts/2023-06-23-agent/",), 
+    bs_kwargs=dict(parse_only=bs4.SoupStrainer(class_=("post-content", "post-title", "post-header"))), 
+)
+
+docs = loader.load()
